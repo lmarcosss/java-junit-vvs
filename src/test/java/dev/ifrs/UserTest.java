@@ -1,11 +1,10 @@
 package dev.ifrs;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,38 +17,34 @@ import dev.ifrs.service.UserService;
 
 @ExtendWith(MockitoExtension.class)
 public class UserTest {
-
     @InjectMocks
     UserService uc;
 
     @Mock
     IRepository repo;
 
-    @BeforeEach
-    void beforeEach() {
-        uc = new UserService();
-    }
-
     @Test
     void registerSuccess() {
         String name = "name";
         String password = "password";
+        User mockedUser = new User(name, password);
 
-        User user = uc.registerUser(name, password);
+        when(repo.persistUser(mockedUser)).thenReturn(mockedUser);
+
+        User user = uc.registerUser(mockedUser);
 
         assertNotNull(user);
-        assertEquals(user.getName(), name);
-        assertEquals(user.getPassword(), password);
     }
 
     @Test
     void registerFail() {
         String name = "name";
         String password = "pass";
+        User mockedUser = new User(name, password);
 
         IllegalArgumentException thrown = assertThrows(
            IllegalArgumentException.class,
-           () -> uc.registerUser(name, password),
+           () -> uc.registerUser(mockedUser),
            "Deveria estourar IllegalArgumentException para senha invalida"
         );
 

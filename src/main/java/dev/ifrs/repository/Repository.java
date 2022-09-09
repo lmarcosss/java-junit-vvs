@@ -10,7 +10,7 @@ public class Repository implements IRepository {
     @Override
     public User persistUser(User user) {
         userList.add(user);
-        
+
         return user;
     }
     
